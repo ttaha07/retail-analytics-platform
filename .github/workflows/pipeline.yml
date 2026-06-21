@@ -1,12 +1,11 @@
-name: Retail Analytics Pipeline CI/CD
+name: Retail Analytics Snowflake Pipeline CI/CD
 
 on:
   push:
     branches: [ main ]
 
 jobs:
-  run-etl-pipeline:
-
+  run-snowflake-etl:
     runs-on: ubuntu-latest
 
     steps:
@@ -15,75 +14,61 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      # STEP 2 - Install SQLite (needed to run SQL files)
-      - name: Install SQLite
-        run: |
-          sudo apt-get update
-          sudo apt-get install sqlite3 -y
-
-      # STEP 3 - Create database file
-      - name: Initialize Database
-        run: |
-          touch warehouse.db
-
-      # =========================
-      # BRONZE LAYER
-      # =========================
-      - name: Run Bronze Layer SQL
-        run: |
-          echo "Running Bronze Layer..."
-          sqlite3 warehouse.db < sql/bronze/create_tables.sql
-          sqlite3 warehouse.db < sql/bronze/load_data.sql
-          sqlite3 warehouse.db < sql/bronze/validation.sql
-
-      # =========================
-      # SILVER LAYER
-      # =========================
-      - name: Run Silver Layer SQL
-        run: |
-          echo "Running Silver Layer..."
-          sqlite3 warehouse.db < sql/silver/create_silver_tables.sql
-          sqlite3 warehouse.db < sql/silver/load_silver_tables.sql
-          sqlite3 warehouse.db < sql/silver/validation.sql
-
-      # =========================
-      # GOLD LAYER
-      # =========================
-      - name: Run Gold Layer SQL
-        run: |
-          echo "Running Gold Layer..."
-          sqlite3 warehouse.db < sql/gold/create_fact_table.sql
-          sqlite3 warehouse.db < sql/gold/create_dimensions.sql
-          sqlite3 warehouse.db < sql/gold/validation.sql
-
-      # =========================
-      # DATA QUALITY CHECKS (Python)
-      # =========================
+      # STEP 2 - Setup Python
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Install Python Dependencies
+      # STEP 3 - Install dependencies
+      - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install pandas
+          pip install snowflake-connector-python pandas
 
+      # STEP 4 - Run Bronze Layer
+      - name: Run Bronze Layer
+        env:
+          SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
+          SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+          SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+          SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
+          SNOWFLAKE_DATABASE: ${{ secrets.SNOWFLAKE_DATABASE }}
+          SNOWFLAKE_SCHEMA: ${{ secrets.SNOWFLAKE_SCHEMA }}
+        run: |
+          python sql/bronze/run_bronze.py
+
+      # STEP 5 - Run Silver Layer
+      - name: Run Silver Layer
+        env:
+          SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
+          SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+          SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+          SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
+          SNOWFLAKE_DATABASE: ${{ secrets.SNOWFLAKE_DATABASE }}
+          SNOWFLAKE_SCHEMA: ${{ secrets.SNOWFLAKE_SCHEMA }}
+        run: |
+          python sql/silver/run_silver.py
+
+      # STEP 6 - Run Gold Layer
+      - name: Run Gold Layer
+        env:
+          SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
+          SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+          SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+          SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
+          SNOWFLAKE_DATABASE: ${{ secrets.SNOWFLAKE_DATABASE }}
+          SNOWFLAKE_SCHEMA: ${{ secrets.SNOWFLAKE_SCHEMA }}
+        run: |
+          python sql/gold/run_gold.py
+
+      # STEP 7 - Run Data Quality Checks
       - name: Run Data Quality Tests
         run: |
           python tests/data_quality_checks.py
 
-      # =========================
-      # UPLOAD ARTIFACTS (PROOF)
-      # =========================
-      - name: Upload Database Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: warehouse-database
-          path: warehouse.db
-
+      # STEP 8 - Upload logs
       - name: Upload Logs
         uses: actions/upload-artifact@v4
         with:
           name: pipeline-logs
-          path: .
+          path: logs/
