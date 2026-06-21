@@ -69,3 +69,51 @@ The Gold layer supports business reporting and KPI generation.
 
 ![Revenue KPI](screenshots/day4_total_revenue.png)
 
+# Retail Sales Data Pipeline
+
+A production-style Data Engineering project implementing the Medallion Architecture.
+
+## Features
+
+- Bronze Layer (Raw Data)
+- Silver Layer (Cleaned Data)
+- Gold Layer (Business Metrics)
+- Data Quality Testing
+- Pipeline Orchestration
+- GitHub Actions CI/CD
+
+## Architecture
+
+![Architecture](screenshots/day5_architecture_final.png)
+
+## Screenshots
+
+### Stage Files
+![Stage Files](screenshots/day2_stage_files.png)
+
+### Bronze Validation
+![Bronze Validation](screenshots/day2_bronze_row_counts.png)
+
+### Silver Layer
+![Silver](screenshots/day3_silver_tables.png)
+
+### Gold Layer
+![Gold](screenshots/day4_gold_tables.png)
+
+### Revenue Metrics
+![Revenue](screenshots/day4_total_revenue.png)
+
+### Architecture
+![Architecture](screenshots/day5_architecture_final.png)
+
+## Technologies Used
+
+- Python
+- Pandas
+- Snowflake
+- SQL
+- Git
+- GitHub Actions
+- Medallion Architecture
+- ETL Pipelines
+- Data Quality Validation
