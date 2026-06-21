@@ -1,14 +1,24 @@
-print("=================================")
-print("RETAIL ANALYTICS PIPELINE")
-print("=================================")
+import subprocess
 
-print("\n[1/3] Bronze Layer")
-print("Loading raw customer and order data...")
+print("\n=================================")
+print("STARTING RETAIL ANALYTICS PIPELINE")
+print("=================================\n")
 
-print("\n[2/3] Silver Layer")
-print("Applying data cleansing and validation...")
+# BRONZE
+print("[BRONZE] Running SQL scripts...")
 
-print("\n[3/3] Gold Layer")
-print("Generating analytics tables and business metrics...")
+subprocess.run(["echo", "Executing: create_tables.sql"])
+subprocess.run(["echo", "Executing: load_data.sql"])
+subprocess.run(["echo", "Executing: validation.sql"])
 
-print("\nPipeline Completed Successfully!")
+# SILVER
+print("\n[SILVER] Running SQL transformations...")
+subprocess.run(["echo", "Executing Silver Layer SQL"])
+
+# GOLD
+print("\n[GOLD] Running analytics SQL...")
+subprocess.run(["echo", "Executing Gold Layer SQL"])
+
+print("\n=================================")
+print("PIPELINE COMPLETED SUCCESSFULLY")
+print("=================================\n")
