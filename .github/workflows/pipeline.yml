@@ -1,29 +1,20 @@
-name: Data Pipeline CI
+- name: Install SQLite
+  run: sudo apt-get install sqlite3 -y
 
-on:
-  push:
-    branches:
-      - main
+- name: Run Bronze SQL
+  run: |
+    sqlite3 database.db < sql/bronze/create_tables.sql
+    sqlite3 database.db < sql/bronze/load_data.sql
+    sqlite3 database.db < sql/bronze/validation.sql
+    
+  - name: Run Silver SQL
+  run: |
+    sqlite3 database.db < sql/silver/create_silver_tables.sql
+    sqlite3 database.db < sql/silver/load_silver_tables.sql
+    sqlite3 database.db < sql/silver/validation.sql
 
-jobs:
-  run-pipeline:
-
-    runs-on: ubuntu-latest
-
-    steps:
-
-    - name: Checkout Code
-      uses: actions/checkout@v4
-
-    - name: Setup Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: "3.11"
-
-    - name: Install Packages
-      run: |
-        pip install pandas
-
-    - name: Run Pipeline
-      run: |
-        python orchestration/pipeline.py
+- name: Run Gold SQL
+  run: |
+    sqlite3 database.db < sql/gold/create_fact_table.sql
+    sqlite3 database.db < sql/gold/create_dimensions.sql
+    sqlite3 database.db < sql/gold/validation.sql
