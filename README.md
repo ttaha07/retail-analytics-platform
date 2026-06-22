@@ -59,3 +59,15 @@
 # Referential Integrity Validation
 
 ![Referential Integrity Checks](screenshots/day6_referential_integrity_checks.png)
+
+# Pipeline Monitoring
+
+![Pipeline Health Check](screenshots/day7_pipeline_health_check.png)
+
+# Table Load Summary
+
+![Table Load Summary](screenshots/day7_table_load_summary.png)
+
+# Business KPI Summary
+
+![Business KPI Summary](screenshots/day7_business_kpi_summary.png)
