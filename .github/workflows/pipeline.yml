@@ -9,75 +9,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
-      # STEP 1 - Checkout repo
-      - name: Checkout Repository
+      - name: Checkout repo
         uses: actions/checkout@v4
 
-      # STEP 2 - Install SQLite (for SQL execution)
-      - name: Install SQLite
+      - name: Install SnowSQL
         run: |
-          sudo apt-get update
-          sudo apt-get install sqlite3 -y
+          curl -O https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.2/linux_x86_64/snowsql-1.2.32-linux_x86_64.bash
+          bash snowsql-1.2.32-linux_x86_64.bash
 
-      # STEP 3 - Create database file
-      - name: Initialize Database
+      - name: Run Snowflake SQL scripts
+        env:
+          SNOWSQL_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+          SNOWSQL_USER: ${{ secrets.SNOWFLAKE_USER }}
+          SNOWSQL_PWD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+          SNOWSQL_ROLE: ${{ secrets.SNOWFLAKE_ROLE }}
+          SNOWSQL_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
+          SNOWSQL_DATABASE: ${{ secrets.SNOWFLAKE_DATABASE }}
+          SNOWSQL_SCHEMA: ${{ secrets.SNOWFLAKE_SCHEMA }}
         run: |
-          rm -f warehouse.db
-          touch warehouse.db
-
-      # =========================
-      # BRONZE LAYER
-      # =========================
-      - name: Run Bronze Layer SQL
-        run: |
-          echo "Running Bronze Layer..."
-          sqlite3 warehouse.db < sql/bronze/create_tables.sql
-          sqlite3 warehouse.db < sql/bronze/load_data.sql
-          sqlite3 warehouse.db < sql/bronze/validation.sql
-
-      # =========================
-      # SILVER LAYER
-      # =========================
-      - name: Run Silver Layer SQL
-        run: |
-          echo "Running Silver Layer..."
-          sqlite3 warehouse.db < sql/silver/create_silver_tables.sql
-          sqlite3 warehouse.db < sql/silver/load_silver_tables.sql
-          sqlite3 warehouse.db < sql/silver/validation.sql
-
-      # =========================
-      # GOLD LAYER
-      # =========================
-      - name: Run Gold Layer SQL
-        run: |
-          echo "Running Gold Layer..."
-          sqlite3 warehouse.db < sql/gold/create_fact_table.sql
-          sqlite3 warehouse.db < sql/gold/create_dimensions.sql
-          sqlite3 warehouse.db < sql/gold/validation.sql
-
-      # =========================
-      # PYTHON DATA QUALITY CHECKS
-      # =========================
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: Install Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install pandas
-
-      - name: Run Data Quality Tests
-        run: |
-          python tests/data_quality_checks.py
-
-      # =========================
-      # ARTIFACTS (PROOF OF RUN)
-      # =========================
-      - name: Upload Database Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: warehouse-db
-          path: warehouse.db
+          /home/runner/.snowsql/snowsql \
+          -a $SNOWSQL_ACCOUNT \
+          -u $SNOWSQL_USER \
+          -p $SNOWSQL_PWD \
+          -r $SNOWSQL_ROLE \
+          -w $SNOWSQL_WAREHOUSE \
+          -d $SNOWSQL_DATABASE \
+          -s $SNOWSQL_SCHEMA \
+          -f sql/pipeline.sql
