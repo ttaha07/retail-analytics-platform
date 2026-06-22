@@ -13,13 +13,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install Snowflake CLI
-        run: |
-          pipx install snowflake-cli-labs
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
+        uses: snowflakedb/snowflake-cli-action@v1
 
       - name: Verify Snowflake CLI
-        run: |
-          snow --version
+        run: snow --version
 
       - name: Run Snowflake SQL scripts
         env:
