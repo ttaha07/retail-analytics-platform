@@ -35,3 +35,27 @@
 # Data Quality Framework
 
 ![Data Quality](screenshots/day5_data_quality_checks.png)
+
+# Data Quality Summary
+
+![Data Quality Summary](screenshots/day6_data_quality_summary.png)
+
+# Row Count Validation
+
+![Row Count Validation](screenshots/day6_row_count_validation.png)
+
+# Null Value Validation
+
+![Null Checks](screenshots/day6_null_checks.png)
+
+# Duplicate Detection
+
+![Duplicate Checks](screenshots/day6_duplicate_checks.png)
+
+# Freshness Validation
+
+![Freshness Checks](screenshots/day6_freshness_checks.png)
+
+# Referential Integrity Validation
+
+![Referential Integrity Checks](screenshots/day6_referential_integrity_checks.png)
