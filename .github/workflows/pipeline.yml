@@ -12,27 +12,25 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Install SnowSQL
+      - name: Install Snowflake CLI
         run: |
-          curl -L -o snowsql.bash https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.2/linux_x86_64/snowsql-1.2.32-linux_x86_64.bash
-          ls -lah
-          bash snowsql.bash -y
-          echo "$HOME/bin" >> $GITHUB_PATH
+          pipx install snowflake-cli-labs
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
 
-      - name: Verify SnowSQL
+      - name: Verify Snowflake CLI
         run: |
-          snowsql -v
+          snow --version
 
       - name: Run Snowflake SQL scripts
         env:
-          SNOWSQL_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
-          SNOWSQL_USER: ${{ secrets.SNOWFLAKE_USER }}
-          SNOWSQL_PWD: ${{ secrets.SNOWFLAKE_PASSWORD }}
-          SNOWSQL_ROLE: ${{ secrets.SNOWFLAKE_ROLE }}
-          SNOWSQL_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
-          SNOWSQL_DATABASE: RETAIL_ANALYTICS_DB
-          SNOWSQL_SCHEMA: PUBLIC
+          SNOWFLAKE_CONNECTIONS_DEFAULT_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+          SNOWFLAKE_CONNECTIONS_DEFAULT_USER: ${{ secrets.SNOWFLAKE_USER }}
+          SNOWFLAKE_CONNECTIONS_DEFAULT_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+          SNOWFLAKE_CONNECTIONS_DEFAULT_ROLE: ${{ secrets.SNOWFLAKE_ROLE }}
+          SNOWFLAKE_CONNECTIONS_DEFAULT_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
+          SNOWFLAKE_CONNECTIONS_DEFAULT_DATABASE: RETAIL_ANALYTICS_DB
+          SNOWFLAKE_CONNECTIONS_DEFAULT_SCHEMA: PUBLIC
         run: |
-          snowsql -f sql/bronze.sql
-          snowsql -f sql/silver.sql
-          snowsql -f sql/gold.sql
+          snow sql -f sql/bronze.sql
+          snow sql -f sql/silver.sql
+          snow sql -f sql/gold.sql
