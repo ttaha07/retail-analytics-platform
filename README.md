@@ -1,116 +1,291 @@
-# Architecture
+# Retail Analytics Platform
 
-The platform follows a Medallion Architecture (Bronze → Silver → Gold).
+![Status](https://img.shields.io/badge/Status-Completed-success)
+![Snowflake](https://img.shields.io/badge/Snowflake-Data%20Warehouse-29B5E8?logo=snowflake\&logoColor=white)
+![SQL](https://img.shields.io/badge/SQL-Analytics-blue)
+![Data Engineering](https://img.shields.io/badge/Data%20Engineering-Portfolio-success)
+![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-CI%2FCD-success?logo=githubactions)
+
+End-to-end Snowflake Data Engineering project implementing a Medallion Architecture (Bronze, Silver, Gold) for retail analytics.
+
+The platform ingests raw e-commerce data, applies data quality validation, builds dimensional models, generates business KPIs, and monitors pipeline health through automated validation checks.
+
+---
+
+## Key Features
+
+* Snowflake Data Warehouse
+* Medallion Architecture
+* Star Schema Modeling
+* Data Quality Framework
+* Pipeline Monitoring
+* Business KPI Analytics
+* GitHub Actions CI/CD
+* Technical Documentation
+
+---
+
+## Architecture
+
+The platform follows a Medallion Architecture pattern.
 
 ![Architecture](screenshots/day5_architecture_final.png)
 
-# Data Ingestion
+```text
+Source Files
+    ↓
+Snowflake Internal Stage
+    ↓
+Bronze Layer
+    ↓
+Silver Layer
+    ↓
+Gold Layer
+    ↓
+Analytics & Reporting
+```
 
-Raw CSV files are loaded into Snowflake Internal Stages and ingested using COPY INTO commands.
+---
+
+## Data Ingestion
+
+Raw CSV files are uploaded into Snowflake Internal Stages and loaded using COPY INTO commands.
 
 ![Stage Files](screenshots/day2_stage_files.png)
 
-# Bronze Layer
+---
+
+## Bronze Layer
 
 The Bronze Layer stores raw source data exactly as received from source systems.
 
+Validation confirms successful ingestion of all source records.
+
 ![Bronze Validation](screenshots/day2_bronze_row_counts.png)
 
-# Silver Layer
+---
 
-The Silver Layer performs data cleansing, standardization, and validation.
+## Silver Layer
+
+The Silver Layer performs cleansing, standardization, and validation before data is promoted to analytics-ready layers.
+
+Key transformations include:
+
+* Duplicate Removal
+* Null Handling
+* Standardization
+* Data Validation
+
+### Silver Tables
 
 ![Silver Tables](screenshots/day3_silver_tables.png)
 
 ### Duplicate Validation
 
-Duplicate detection is performed to ensure data quality before loading analytics layers.
+Duplicate detection ensures data quality before loading downstream analytics tables.
 
 ![Duplicate Validation](screenshots/day3_order_duplicate_check.png)
 
-# Gold Layer
+---
 
-The Gold Layer contains dimensional models optimized for business reporting.
+## Gold Layer
 
-Implemented:
+The Gold Layer contains business-ready dimensional models optimized for reporting and analytics.
 
-- FACT_SALES
-- DIM_CUSTOMER
-- DIM_PRODUCT
-- DIM_DATE
+Implemented Star Schema:
+
+* DIM_CUSTOMER
+* DIM_PRODUCT
+* DIM_DATE
+* FACT_SALES
 
 ![Gold Tables](screenshots/day4_gold_tables.png)
 
-# Revenue Analysis
+---
 
-The platform supports business KPI generation.
+## Business Analytics
 
-### Total Revenue
+The platform supports KPI generation and business reporting.
+
+### Total Revenue KPI
+
+Calculates total revenue generated across all transactions.
 
 ![Revenue KPI](screenshots/day4_total_revenue.png)
 
 ### Monthly Revenue Trend
 
+Analyzes revenue performance over time.
+
 ![Monthly Revenue](screenshots/day5_monthly_revenue.png)
 
-### Top Products
+### Top Products Analysis
+
+Identifies the highest revenue-generating products.
 
 ![Top Products](screenshots/day5_top_products.png)
 
-# Data Quality Framework
+---
 
-The project includes automated validation checks to improve trust in reporting.
+## Data Quality Framework
+
+A comprehensive validation framework was implemented to ensure business users can trust analytics generated from the Gold layer.
+
+### Validation Categories
+
+* Null Value Checks
+* Duplicate Detection
+* Row Count Reconciliation
+* Freshness Validation
+* Referential Integrity Validation
+
+### Data Quality Validation
 
 ![Data Quality](screenshots/day5_data_quality_checks.png)
 
 ### Data Quality Summary
 
+Provides a consolidated validation dashboard across the pipeline.
+
 ![Data Quality Summary](screenshots/day6_data_quality_summary.png)
 
 ### Row Count Validation
+
+Validates consistency between Bronze, Silver, and Gold layers.
 
 ![Row Count Validation](screenshots/day6_row_count_validation.png)
 
 ### Null Value Validation
 
+Validates critical business columns are populated.
+
 ![Null Checks](screenshots/day6_null_checks.png)
 
 ### Duplicate Detection
+
+Identifies duplicate records that may impact business metrics.
 
 ![Duplicate Checks](screenshots/day6_duplicate_checks.png)
 
 ### Freshness Validation
 
+Validates the timeliness of available business data.
+
 ![Freshness Checks](screenshots/day6_freshness_checks.png)
 
 ### Referential Integrity Validation
 
+Ensures all fact records have valid dimension table relationships.
+
 ![Referential Integrity Checks](screenshots/day6_referential_integrity_checks.png)
 
-# Pipeline Monitoring
+---
 
-Monitoring validates operational health of the analytics platform.
+## Pipeline Monitoring
+
+Monitoring was added to validate operational health and reliability of the platform.
 
 ### Pipeline Health Check
+
+Tracks:
+
+* Total records loaded
+* Distinct customers
+* Distinct orders
+* Distinct products
+* Revenue totals
+* Available data range
 
 ![Pipeline Health Check](screenshots/day7_pipeline_health_check.png)
 
 ### Table Load Summary
 
+Validates row counts across Bronze, Silver, and Gold layers.
+
 ![Table Load Summary](screenshots/day7_table_load_summary.png)
 
 ### Business KPI Summary
 
+Provides a consolidated operational KPI dashboard.
+
 ![Business KPI Summary](screenshots/day7_business_kpi_summary.png)
 
-# Skills Demonstrated
+---
 
-- Snowflake
-- SQL
-- Data Warehousing
-- ETL / ELT
-- Medallion Architecture
-- Star Schema Modeling
-- Data Quality Validation
-- Pipeline Monitoring
-- GitHub Actions CI/CD
+## Repository Structure
+
+```text
+retail-analytics-platform/
+
+├── .github/workflows/
+├── docs/
+├── orchestration/
+├── screenshots/
+├── sql/
+│   ├── analytics/
+│   ├── bronze/
+│   ├── data_quality/
+│   ├── gold/
+│   ├── monitoring/
+│   └── silver/
+└── tests/
+```
+
+---
+
+## Skills Demonstrated
+
+### Snowflake
+
+* Databases
+* Schemas
+* Internal Stages
+* File Formats
+* COPY INTO
+* Analytical SQL
+
+### Data Engineering
+
+* Data Warehousing
+* ETL / ELT Development
+* Medallion Architecture
+* Data Pipeline Design
+* Data Quality Validation
+* Pipeline Monitoring
+* Dimensional Modeling
+
+### SQL
+
+* Joins
+* Aggregations
+* KPI Development
+* Business Analytics
+* Data Validation
+
+### Software Engineering
+
+* Git
+* GitHub
+* GitHub Actions CI/CD
+* Technical Documentation
+* Version Control
+
+---
+
+## Future Enhancements
+
+* Snowflake Streams
+* Snowflake Tasks
+* dbt Integration
+* Apache Airflow Orchestration
+* Power BI Dashboard Layer
+* Automated Alerting
+* Data Observability Framework
+
+---
+
+## Author
+
+Retail Analytics Platform
+
+Snowflake Data Engineering Portfolio Project demonstrating Data Warehousing, Analytics Engineering, Data Quality Validation, and Pipeline Monitoring.
