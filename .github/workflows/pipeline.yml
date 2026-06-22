@@ -1,4 +1,4 @@
-name: Retail Analytics Pipeline CI/CD
+name: Retail Analytics Pipeline
 
 on:
   push:
@@ -14,8 +14,14 @@ jobs:
 
       - name: Install SnowSQL
         run: |
-          curl -O https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.2/linux_x86_64/snowsql-1.2.32-linux_x86_64.bash
-          bash snowsql-1.2.32-linux_x86_64.bash
+          curl -L -o snowsql.bash https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.2/linux_x86_64/snowsql-1.2.32-linux_x86_64.bash
+          ls -lah
+          bash snowsql.bash -y
+          echo "$HOME/bin" >> $GITHUB_PATH
+
+      - name: Verify SnowSQL
+        run: |
+          snowsql -v
 
       - name: Run Snowflake SQL scripts
         env:
@@ -24,15 +30,9 @@ jobs:
           SNOWSQL_PWD: ${{ secrets.SNOWFLAKE_PASSWORD }}
           SNOWSQL_ROLE: ${{ secrets.SNOWFLAKE_ROLE }}
           SNOWSQL_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
-          SNOWSQL_DATABASE: ${{ secrets.SNOWFLAKE_DATABASE }}
-          SNOWSQL_SCHEMA: ${{ secrets.SNOWFLAKE_SCHEMA }}
+          SNOWSQL_DATABASE: RETAIL_ANALYTICS_DB
+          SNOWSQL_SCHEMA: PUBLIC
         run: |
-          /home/runner/.snowsql/snowsql \
-          -a $SNOWSQL_ACCOUNT \
-          -u $SNOWSQL_USER \
-          -p $SNOWSQL_PWD \
-          -r $SNOWSQL_ROLE \
-          -w $SNOWSQL_WAREHOUSE \
-          -d $SNOWSQL_DATABASE \
-          -s $SNOWSQL_SCHEMA \
-          -f sql/pipeline.sql
+          snowsql -f sql/bronze.sql
+          snowsql -f sql/silver.sql
+          snowsql -f sql/gold.sql
