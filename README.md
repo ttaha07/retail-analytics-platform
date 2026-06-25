@@ -21,6 +21,9 @@ The platform ingests raw e-commerce data, applies data quality validation, build
 * Pipeline Monitoring
 * Business KPI Analytics
 * GitHub Actions CI/CD
+* Automated CI/CD validation using GitHub Actions
+* Real Snowflake-connected orchestration using Python
+* Pytest data quality checks executed against Snowflake tables
 * Technical Documentation
 
 ---
@@ -212,6 +215,22 @@ Provides a consolidated operational KPI dashboard.
 
 ---
 
+## Automated Validation
+
+This project includes a GitHub Actions workflow that validates the Snowflake pipeline on push and pull request.
+
+The workflow performs the following checks:
+
+* Installs Python dependencies
+* Compiles Python orchestration and test scripts
+* Runs the Snowflake pipeline using `orchestration/pipeline.py`
+* Executes pytest-based data quality checks against Snowflake
+* Validates fact and dimension tables, null checks, revenue checks, and referential integrity
+
+Current validation result: Passing
+
+---
+
 ## Repository Structure
 
 ```text
@@ -264,6 +283,8 @@ retail-analytics-platform/
 
 ### Software Engineering
 
+* Python Orchestration
+* Pytest Validation
 * Git
 * GitHub
 * GitHub Actions CI/CD
@@ -288,4 +309,4 @@ retail-analytics-platform/
 
 Retail Analytics Platform
 
-Snowflake Data Engineering Portfolio Project demonstrating Data Warehousing, Analytics Engineering, Data Quality Validation, and Pipeline Monitoring.
+Snowflake Data Engineering Portfolio Project demonstrating Data Warehousing, Analytics Engineering, Data Quality Validation, Pipeline Monitoring, Python Orchestration, and Automated CI/CD Validation.
