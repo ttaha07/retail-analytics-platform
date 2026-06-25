@@ -1,31 +1,47 @@
-name: Retail Analytics Pipeline
+name: Snowflake Pipeline Validation
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  run-etl-pipeline:
+  validate-pipeline:
     runs-on: ubuntu-latest
 
+    env:
+      SNOWFLAKE_ACCOUNT: BIYMWRR-VX25070
+      SNOWFLAKE_USER: TAHA
+      SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+      SNOWFLAKE_WAREHOUSE: RETAIL_WH
+      SNOWFLAKE_DATABASE: RETAIL_ANALYTICS_DB
+      SNOWFLAKE_SCHEMA: GOLD
+
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Snowflake CLI
-        uses: snowflakedb/snowflake-cli-action@v2.0
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
 
-      - name: Verify Snowflake CLI
-        run: snow --version
-
-      - name: Run Snowflake SQL scripts
-        env:
-          SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
-          SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
-          SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
-          SNOWFLAKE_ROLE: ${{ secrets.SNOWFLAKE_ROLE }}
-          SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
+      - name: Install dependencies
         run: |
-          snow sql --temporary-connection --account "$SNOWFLAKE_ACCOUNT" --user "$SNOWFLAKE_USER" --password "$SNOWFLAKE_PASSWORD" --role "$SNOWFLAKE_ROLE" --warehouse "$SNOWFLAKE_WAREHOUSE" --database RETAIL_ANALYTICS_DB --schema PUBLIC -f sql/bronze/bronze.sql
-          snow sql --temporary-connection --account "$SNOWFLAKE_ACCOUNT" --user "$SNOWFLAKE_USER" --password "$SNOWFLAKE_PASSWORD" --role "$SNOWFLAKE_ROLE" --warehouse "$SNOWFLAKE_WAREHOUSE" --database RETAIL_ANALYTICS_DB --schema PUBLIC -f sql/silver/silver.sql
-          snow sql --temporary-connection --account "$SNOWFLAKE_ACCOUNT" --user "$SNOWFLAKE_USER" --password "$SNOWFLAKE_PASSWORD" --role "$SNOWFLAKE_ROLE" --warehouse "$SNOWFLAKE_WAREHOUSE" --database RETAIL_ANALYTICS_DB --schema PUBLIC -f sql/gold/gold.sql
+          pip install -r requirements.txt
+
+      - name: Compile Python files
+        run: |
+          python -m py_compile orchestration/pipeline.py
+          python -m py_compile tests/data_quality_checks.py
+
+      - name: Run Snowflake pipeline
+        run: |
+          python orchestration/pipeline.py
+
+      - name: Run data quality tests
+        run: |
+          pytest tests/data_quality_checks.py -v
