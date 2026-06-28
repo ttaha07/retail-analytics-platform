@@ -144,6 +144,51 @@ def test_fact_sales_total_sale_amount_not_negative(snowflake_connection):
     assert negative_count == 0
 
 
+def test_fact_sales_sales_sk_not_null(snowflake_connection):
+    null_count = run_scalar_query(
+        snowflake_connection,
+        "SELECT COUNT(*) FROM GOLD.FACT_SALES WHERE SALES_SK IS NULL"
+    )
+
+    assert null_count == 0
+
+
+def test_fact_sales_customer_sk_not_null(snowflake_connection):
+    null_count = run_scalar_query(
+        snowflake_connection,
+        "SELECT COUNT(*) FROM GOLD.FACT_SALES WHERE CUSTOMER_SK IS NULL"
+    )
+
+    assert null_count == 0
+
+
+def test_fact_sales_product_sk_not_null(snowflake_connection):
+    null_count = run_scalar_query(
+        snowflake_connection,
+        "SELECT COUNT(*) FROM GOLD.FACT_SALES WHERE PRODUCT_SK IS NULL"
+    )
+
+    assert null_count == 0
+
+
+def test_fact_sales_date_sk_not_null(snowflake_connection):
+    null_count = run_scalar_query(
+        snowflake_connection,
+        "SELECT COUNT(*) FROM GOLD.FACT_SALES WHERE DATE_SK IS NULL"
+    )
+
+    assert null_count == 0
+
+
+def test_fact_sales_load_timestamp_not_null(snowflake_connection):
+    null_count = run_scalar_query(
+        snowflake_connection,
+        "SELECT COUNT(*) FROM GOLD.FACT_SALES WHERE LOAD_TIMESTAMP IS NULL"
+    )
+
+    assert null_count == 0
+
+
 def test_customer_referential_integrity(snowflake_connection):
     missing_customers = run_scalar_query(
         snowflake_connection,
@@ -151,8 +196,8 @@ def test_customer_referential_integrity(snowflake_connection):
         SELECT COUNT(*)
         FROM GOLD.FACT_SALES fs
         LEFT JOIN GOLD.DIM_CUSTOMER dc
-            ON fs.CUSTOMER_ID = dc.CUSTOMER_ID
-        WHERE dc.CUSTOMER_ID IS NULL
+            ON fs.CUSTOMER_SK = dc.CUSTOMER_SK
+        WHERE dc.CUSTOMER_SK IS NULL
         """
     )
 
@@ -166,8 +211,8 @@ def test_product_referential_integrity(snowflake_connection):
         SELECT COUNT(*)
         FROM GOLD.FACT_SALES fs
         LEFT JOIN GOLD.DIM_PRODUCT dp
-            ON fs.PRODUCT_ID = dp.PRODUCT_ID
-        WHERE dp.PRODUCT_ID IS NULL
+            ON fs.PRODUCT_SK = dp.PRODUCT_SK
+        WHERE dp.PRODUCT_SK IS NULL
         """
     )
 
@@ -181,8 +226,8 @@ def test_date_referential_integrity(snowflake_connection):
         SELECT COUNT(*)
         FROM GOLD.FACT_SALES fs
         LEFT JOIN GOLD.DIM_DATE dd
-            ON fs.ORDER_DATE = dd.ORDER_DATE
-        WHERE dd.ORDER_DATE IS NULL
+            ON fs.DATE_SK = dd.DATE_SK
+        WHERE dd.DATE_SK IS NULL
         """
     )
 

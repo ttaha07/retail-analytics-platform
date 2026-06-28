@@ -2,29 +2,29 @@ USE DATABASE RETAIL_ANALYTICS_DB;
 USE SCHEMA GOLD;
 
 SELECT
-    'FACT_SALES missing customer dimension match' AS CHECK_NAME,
+    'FACT_SALES missing customer dimension surrogate key match' AS CHECK_NAME,
     COUNT(*) AS FAILED_RECORDS
 FROM FACT_SALES fs
 LEFT JOIN DIM_CUSTOMER dc
-    ON fs.CUSTOMER_ID = dc.CUSTOMER_ID
-WHERE dc.CUSTOMER_ID IS NULL
+    ON fs.CUSTOMER_SK = dc.CUSTOMER_SK
+WHERE dc.CUSTOMER_SK IS NULL
 
 UNION ALL
 
 SELECT
-    'FACT_SALES missing product dimension match',
+    'FACT_SALES missing product dimension surrogate key match',
     COUNT(*) AS FAILED_RECORDS
 FROM FACT_SALES fs
 LEFT JOIN DIM_PRODUCT dp
-    ON fs.PRODUCT_ID = dp.PRODUCT_ID
-WHERE dp.PRODUCT_ID IS NULL
+    ON fs.PRODUCT_SK = dp.PRODUCT_SK
+WHERE dp.PRODUCT_SK IS NULL
 
 UNION ALL
 
 SELECT
-    'FACT_SALES missing date dimension match',
+    'FACT_SALES missing date dimension surrogate key match',
     COUNT(*) AS FAILED_RECORDS
 FROM FACT_SALES fs
 LEFT JOIN DIM_DATE dd
-    ON fs.ORDER_DATE = dd.ORDER_DATE
-WHERE dd.ORDER_DATE IS NULL;
+    ON fs.DATE_SK = dd.DATE_SK
+WHERE dd.DATE_SK IS NULL;
