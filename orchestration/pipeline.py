@@ -79,29 +79,39 @@ def execute_sql_file(cursor, file_path):
         raise FileNotFoundError(f"SQL file not found: {file_path}")
 
     sql_text = path.read_text()
+    statements = [stmt.strip() for stmt in sql_text.split(";") if stmt.strip()]
 
     print(f"Running: {file_path}")
 
-    statements = [stmt.strip() for stmt in sql_text.split(";") if stmt.strip()]
-
-    for statement in statements:
-        cursor.execute(statement)
+    for statement_number, statement in enumerate(statements, start=1):
+        try:
+            cursor.execute(statement)
+        except Exception as error:
+            statement_preview = " ".join(statement.split())[:300]
+            raise RuntimeError(
+                f"SQL execution failed in {file_path}, "
+                f"statement {statement_number}: {statement_preview}"
+            ) from error
 
     print(f"Completed: {file_path}")
 
 
 def run_pipeline():
     connection = get_connection()
+    cursor = connection.cursor()
 
     try:
-        cursor = connection.cursor()
-
         for sql_file in SQL_FILES:
-            execute_sql_file(cursor, sql_file)
+            try:
+                execute_sql_file(cursor, sql_file)
+            except Exception as error:
+                print(f"Pipeline failed while running {sql_file}: {error}")
+                raise
 
         print("Snowflake pipeline completed successfully.")
 
     finally:
+        cursor.close()
         connection.close()
 
 
