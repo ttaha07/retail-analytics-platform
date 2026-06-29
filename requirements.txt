@@ -1,2 +1,2 @@
-snowflake-connector-python
-pytest
+snowflake-connector-python>=3.6,<4
+pytest>=8.0,<10

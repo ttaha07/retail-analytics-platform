@@ -1,3 +1,35 @@
+# Environment variables and secrets
 .env
+.env.*
+
+# Python cache
 __pycache__/
 *.pyc
+*.pyo
+.pytest_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Local Snowflake configs
+.snowflake/
+
+# Data files
+*.csv
+*.parquet
+*.jsonl
+
+# Logs
+*.log
+logs/
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+
+# OS files
+.DS_Store
+Thumbs.db
