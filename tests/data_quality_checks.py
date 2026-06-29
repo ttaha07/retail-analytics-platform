@@ -89,6 +89,14 @@ def test_fact_sales_order_id_not_null(snowflake_connection):
 
     assert null_count == 0
 
+def test_fact_sales_customer_unique_id_not_null(snowflake_connection):
+    null_count = run_scalar_query(
+        snowflake_connection,
+        "SELECT COUNT(*) FROM GOLD.FACT_SALES WHERE CUSTOMER_UNIQUE_ID IS NULL"
+    )
+
+    assert null_count == 0
+
 
 def test_fact_sales_order_item_id_not_null(snowflake_connection):
     null_count = run_scalar_query(
@@ -202,6 +210,22 @@ def test_customer_referential_integrity(snowflake_connection):
     )
 
     assert missing_customers == 0
+
+def test_customer_unique_id_unique(snowflake_connection):
+    duplicate_count = run_scalar_query(
+        snowflake_connection,
+        """
+        SELECT COUNT(*)
+        FROM (
+            SELECT CUSTOMER_UNIQUE_ID
+            FROM GOLD.DIM_CUSTOMER
+            GROUP BY CUSTOMER_UNIQUE_ID
+            HAVING COUNT(*) > 1
+        )
+        """
+    )
+
+    assert duplicate_count == 0
 
 
 def test_product_referential_integrity(snowflake_connection):
