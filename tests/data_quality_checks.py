@@ -1,40 +1,18 @@
-import os
-
 import pytest
-import snowflake.connector
 
 
-REQUIRED_ENV_VARS = [
-    "SNOWFLAKE_ACCOUNT",
-    "SNOWFLAKE_USER",
-    "SNOWFLAKE_PASSWORD",
-    "SNOWFLAKE_WAREHOUSE",
-    "SNOWFLAKE_DATABASE",
-    "SNOWFLAKE_SCHEMA",
-]
+pytestmark = pytest.mark.snowflake
 
 
-def snowflake_config_available():
-    return all(os.getenv(var) for var in REQUIRED_ENV_VARS)
+def run_scalar_query(connection, query):
+    cursor = connection.cursor()
 
-
-@pytest.fixture(scope="module")
-def snowflake_connection():
-    if not snowflake_config_available():
-        pytest.skip("Snowflake credentials not configured.")
-
-    connection = snowflake.connector.connect(
-        account=os.getenv("SNOWFLAKE_ACCOUNT"),
-        user=os.getenv("SNOWFLAKE_USER"),
-        password=os.getenv("SNOWFLAKE_PASSWORD"),
-        warehouse=os.getenv("SNOWFLAKE_WAREHOUSE"),
-        database=os.getenv("SNOWFLAKE_DATABASE"),
-        schema=os.getenv("SNOWFLAKE_SCHEMA"),
-    )
-
-    yield connection
-
-    connection.close()
+    try:
+        cursor.execute(query)
+        result = cursor.fetchone()[0]
+        return result
+    finally:
+        cursor.close()
 
 
 def run_scalar_query(connection, query):
