@@ -69,6 +69,9 @@ def get_connection():
         warehouse=os.getenv("SNOWFLAKE_WAREHOUSE"),
         database=os.getenv("SNOWFLAKE_DATABASE"),
         schema=os.getenv("SNOWFLAKE_SCHEMA"),
+        login_timeout=30,
+        network_timeout=60,
+        socket_timeout=30,
     )
 
 
