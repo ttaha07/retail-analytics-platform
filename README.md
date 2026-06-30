@@ -28,25 +28,33 @@ The platform ingests raw e-commerce data, applies data quality validation, build
 
 ---
 
+
+Replace it with this:
+
+:::writing{variant="standard" id="74821"}
 ## Architecture
 
-The platform follows a Medallion Architecture pattern.
+The platform follows a Medallion Architecture pattern with automated orchestration, validation, and monitoring.
 
-![Architecture](screenshots/day5_architecture_final.png)
+```mermaid
+flowchart TD
+    A[Raw CSV Files] --> B[Snowflake Internal Stage]
+    B --> C[Bronze Layer<br/>Raw Source Tables]
+    C --> D[Silver Layer<br/>Cleaned, Standardized, Deduplicated Tables]
+    D --> E[Gold Layer<br/>Star Schema]
+    E --> F[Business Analytics Queries]
+    E --> G[Data Quality Checks]
+    E --> H[Pipeline Monitoring]
 
-```text
-Source Files
-    ↓
-Snowflake Internal Stage
-    ↓
-Bronze Layer
-    ↓
-Silver Layer
-    ↓
-Gold Layer
-    ↓
-Analytics & Reporting
-```
+    I[Python Orchestration<br/>orchestration/pipeline.py] --> C
+    I --> D
+    I --> E
+    I --> F
+    I --> G
+    I --> H
+
+    J[GitHub Actions CI/CD] --> I
+    K[Pytest Validation] --> G
 
 ---
 
@@ -228,6 +236,30 @@ The workflow performs the following checks:
 * Validates fact and dimension tables, null checks, revenue checks, and referential integrity
 
 Current validation result: Passing
+
+---
+
+## Failure Handling
+
+The Python orchestration script runs SQL files in dependency order across Bronze, Silver, Gold, Analytics, Data Quality, and Monitoring layers.
+
+If a SQL statement fails, the pipeline raises an error that includes:
+
+* The SQL file that failed
+* The statement number inside the file
+* A preview of the failed SQL statement
+* The original Snowflake error message
+
+This causes the pipeline and GitHub Actions workflow to fail fast instead of silently continuing with incomplete or unreliable data.
+
+Example failure behavior:
+
+```text
+Pipeline failed while running sql/analytics/customer_lifetime_value.sql
+SQL execution failed in sql/analytics/customer_lifetime_value.sql, statement 3
+```
+
+This makes pipeline failures easier to debug and improves operational reliability.
 
 ---
 
