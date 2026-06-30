@@ -329,6 +329,9 @@ retail-analytics-platform/
 
 ## Author
 
-Retail Analytics Platform
+**Taha M. Taha**  
+Data Engineer | Snowflake | SQL | Microsoft Fabric | Data Warehousing  
 
-Snowflake Data Engineering Portfolio Project demonstrating Data Warehousing, Analytics Engineering, Data Quality Validation, Pipeline Monitoring, Python Orchestration, and Automated CI/CD Validation.
+GitHub: [ttaha07](https://github.com/ttaha07)
+
+This project was built as a Snowflake Data Engineering portfolio project demonstrating data warehousing, analytics engineering, data quality validation, pipeline monitoring, Python orchestration, and automated CI/CD validation.
