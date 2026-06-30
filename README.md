@@ -33,21 +33,20 @@ The platform ingests raw e-commerce data, applies data quality validation, build
 The platform follows a Medallion Architecture pattern with automated orchestration, validation, and monitoring.
 
 ```mermaid
-flowchart TD
+flowchart LR
     A["Raw CSV Files"] --> B["Snowflake Internal Stage"]
     B --> C["Bronze Layer"]
     C --> D["Silver Layer"]
     D --> E["Gold Layer"]
-    E --> F["Business Analytics Queries"]
+    E --> F["Analytics Queries"]
     E --> G["Data Quality Checks"]
     E --> H["Pipeline Monitoring"]
 
-    I["Python Orchestration"] --> C
-    I --> D
-    I --> E
-    I --> F
-    I --> G
-    I --> H
+    I["Python Orchestration"] -. runs pipeline .-> C
+    I -. runs pipeline .-> D
+    I -. runs pipeline .-> E
+    I -. runs checks .-> G
+    I -. runs monitoring .-> H
 
     J["GitHub Actions CI/CD"] --> I
     K["Pytest Validation"] --> G
