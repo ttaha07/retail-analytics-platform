@@ -37,19 +37,15 @@ flowchart LR
     A["Raw CSV Files"] --> B["Snowflake Internal Stage"]
     B --> C["Bronze Layer"]
     C --> D["Silver Layer"]
-    D --> E["Gold Layer"]
-    E --> F["Analytics Queries"]
-    E --> G["Data Quality Checks"]
-    E --> H["Pipeline Monitoring"]
+    D --> E["Gold Star Schema"]
+    E --> F["Analytics"]
+    E --> G["Data Quality"]
+    E --> H["Monitoring"]
 
-    I["Python Orchestration"] -. runs pipeline .-> C
-    I -. runs pipeline .-> D
-    I -. runs pipeline .-> E
-    I -. runs checks .-> G
-    I -. runs monitoring .-> H
-
-    J["GitHub Actions CI/CD"] --> I
-    K["Pytest Validation"] --> G
+    I["GitHub Actions"] --> J["Python Pipeline"]
+    J -. orchestrates .-> C
+    J -. validates .-> G
+    K["Pytest"] --> G
 ```
 
 ## Data Ingestion
