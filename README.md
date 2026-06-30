@@ -34,25 +34,24 @@ The platform follows a Medallion Architecture pattern with automated orchestrati
 
 ```mermaid
 flowchart TD
-    A[Raw CSV Files] --> B[Snowflake Internal Stage]
-    B --> C[Bronze Layer<br/>Raw Source Tables]
-    C --> D[Silver Layer<br/>Cleaned, Standardized, Deduplicated Tables]
-    D --> E[Gold Layer<br/>Star Schema]
-    E --> F[Business Analytics Queries]
-    E --> G[Data Quality Checks]
-    E --> H[Pipeline Monitoring]
+    A["Raw CSV Files"] --> B["Snowflake Internal Stage"]
+    B --> C["Bronze Layer"]
+    C --> D["Silver Layer"]
+    D --> E["Gold Layer"]
+    E --> F["Business Analytics Queries"]
+    E --> G["Data Quality Checks"]
+    E --> H["Pipeline Monitoring"]
 
-    I[Python Orchestration<br/>orchestration/pipeline.py] --> C
+    I["Python Orchestration"] --> C
     I --> D
     I --> E
     I --> F
     I --> G
     I --> H
 
-    J[GitHub Actions CI/CD] --> I
-    K[Pytest Validation] --> G
-
----
+    J["GitHub Actions CI/CD"] --> I
+    K["Pytest Validation"] --> G
+```
 
 ## Data Ingestion
 
