@@ -28,10 +28,6 @@ The platform ingests raw e-commerce data, applies data quality validation, build
 
 ---
 
-
-Replace it with this:
-
-:::writing{variant="standard" id="74821"}
 ## Architecture
 
 The platform follows a Medallion Architecture pattern with automated orchestration, validation, and monitoring.
