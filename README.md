@@ -10,6 +10,8 @@ End-to-end Snowflake Data Engineering project implementing a Medallion Architect
 
 The platform ingests raw e-commerce data, applies data quality validation, builds dimensional models, generates business KPIs, and monitors pipeline health through automated validation checks.
 
+For local setup and execution instructions, see [SETUP.md](SETUP.md).
+
 ---
 
 ## Key Features
