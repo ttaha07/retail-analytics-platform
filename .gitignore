@@ -18,6 +18,7 @@ env/
 
 # Data files
 *.csv
+!data/sample/*.csv
 *.parquet
 *.jsonl
 

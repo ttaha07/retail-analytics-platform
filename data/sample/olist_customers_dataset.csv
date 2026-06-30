@@ -1,0 +1,4 @@
+customer_id,customer_unique_id,customer_zip_code_prefix,customer_city,customer_state
+C001,CU001,10001,toronto,ON
+C002,CU002,20002,mississauga,ON
+C003,CU003,30003,hamilton,ON

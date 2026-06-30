@@ -71,7 +71,18 @@ Do not hardcode Snowflake credentials in project files.
 
 ---
 
-## 5. Upload Source CSV Files to Snowflake Stage
+## 5. Generate Sample Data
+
+This repository includes a small synthetic sample dataset for local testing and demonstration.
+
+Run:
+
+```bash
+python scripts/generate_sample_data.py
+
+---
+
+## 6. Upload Source CSV Files to Snowflake Stage
 
 The Bronze load scripts expect these source files to exist in the Snowflake internal stage:
 
@@ -95,7 +106,7 @@ The stage and file format are created by the Bronze SQL scripts.
 
 ---
 
-## 6. Run the Pipeline
+## 7. Run the Pipeline
 
 Run the Python orchestration script:
 
@@ -123,7 +134,7 @@ If a SQL statement fails, the pipeline raises an error showing:
 
 ---
 
-## 7. Run Data Quality Tests
+## 8. Run Data Quality Tests
 
 Run the pytest validation suite:
 
@@ -143,7 +154,7 @@ These tests validate:
 
 ---
 
-## 8. GitHub Actions Setup
+## 9. GitHub Actions Setup
 
 The GitHub Actions workflow requires Snowflake credentials to be stored as repository secrets.
 
@@ -168,7 +179,7 @@ Forked repositories must configure their own Snowflake secrets before the workfl
 
 ---
 
-## 9. Expected Validation Result
+## 10. Expected Validation Result
 
 A successful pipeline run should show:
 
@@ -186,7 +197,7 @@ The exact number of tests may change as the project evolves.
 
 ---
 
-## 10. Troubleshooting
+## 11. Troubleshooting
 
 ### Tests are skipped
 

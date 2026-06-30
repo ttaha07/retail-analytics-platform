@@ -1,0 +1,4 @@
+order_id,order_item_id,product_id,seller_id,shipping_limit_date,price,freight_value
+O001,1,P001,S001,2026-01-05 10:00:00,120.0,12.5
+O002,1,P002,S002,2026-01-15 10:00:00,250.0,20.0
+O003,1,P003,S003,2026-02-10 10:00:00,85.0,9.99
