@@ -20,27 +20,27 @@ def write_csv(filename, fieldnames, rows):
 
 customers = [
     {
-        "customer_id": "C001",
-        "customer_unique_id": "CU001",
-        "customer_zip_code_prefix": "10001",
-        "customer_city": "toronto",
+        "customer_id": f"C{i:03}",
+        "customer_unique_id": f"CU{i:03}",
+        "customer_zip_code_prefix": f"{10000 + i}",
+        "customer_city": city,
         "customer_state": "ON",
-    },
-    {
-        "customer_id": "C002",
-        "customer_unique_id": "CU002",
-        "customer_zip_code_prefix": "20002",
-        "customer_city": "mississauga",
-        "customer_state": "ON",
-    },
-    {
-        "customer_id": "C003",
-        "customer_unique_id": "CU003",
-        "customer_zip_code_prefix": "30003",
-        "customer_city": "hamilton",
-        "customer_state": "ON",
-    },
+    }
+    for i, city in enumerate(
+        [
+            "toronto",
+            "mississauga",
+            "hamilton",
+            "brampton",
+            "oakville",
+            "burlington",
+            "markham",
+            "vaughan",
+        ],
+        start=1,
+    )
 ]
+
 
 products = [
     {
@@ -76,72 +76,101 @@ products = [
         "product_height_cm": 15,
         "product_width_cm": 20,
     },
-]
-
-base_date = datetime(2026, 1, 1, 10, 0, 0)
-
-orders = [
     {
-        "order_id": "O001",
-        "customer_id": "C001",
-        "order_status": "delivered",
-        "order_purchase_timestamp": base_date.strftime("%Y-%m-%d %H:%M:%S"),
-        "order_approved_at": (base_date + timedelta(hours=1)).strftime("%Y-%m-%d %H:%M:%S"),
-        "order_delivered_carrier_date": (base_date + timedelta(days=1)).strftime("%Y-%m-%d %H:%M:%S"),
-        "order_delivered_customer_date": (base_date + timedelta(days=4)).strftime("%Y-%m-%d %H:%M:%S"),
-        "order_estimated_delivery_date": (base_date + timedelta(days=7)).strftime("%Y-%m-%d %H:%M:%S"),
+        "product_id": "P004",
+        "product_category_name": "beauty",
+        "product_name_lenght": 11,
+        "product_description_lenght": 60,
+        "product_photos_qty": 2,
+        "product_weight_g": 300,
+        "product_length_cm": 18,
+        "product_height_cm": 8,
+        "product_width_cm": 12,
     },
     {
-        "order_id": "O002",
-        "customer_id": "C002",
-        "order_status": "delivered",
-        "order_purchase_timestamp": (base_date + timedelta(days=10)).strftime("%Y-%m-%d %H:%M:%S"),
-        "order_approved_at": (base_date + timedelta(days=10, hours=1)).strftime("%Y-%m-%d %H:%M:%S"),
-        "order_delivered_carrier_date": (base_date + timedelta(days=11)).strftime("%Y-%m-%d %H:%M:%S"),
-        "order_delivered_customer_date": (base_date + timedelta(days=15)).strftime("%Y-%m-%d %H:%M:%S"),
-        "order_estimated_delivery_date": (base_date + timedelta(days=18)).strftime("%Y-%m-%d %H:%M:%S"),
-    },
-    {
-        "order_id": "O003",
-        "customer_id": "C003",
-        "order_status": "delivered",
-        "order_purchase_timestamp": (base_date + timedelta(days=35)).strftime("%Y-%m-%d %H:%M:%S"),
-        "order_approved_at": (base_date + timedelta(days=35, hours=2)).strftime("%Y-%m-%d %H:%M:%S"),
-        "order_delivered_carrier_date": (base_date + timedelta(days=36)).strftime("%Y-%m-%d %H:%M:%S"),
-        "order_delivered_customer_date": (base_date + timedelta(days=40)).strftime("%Y-%m-%d %H:%M:%S"),
-        "order_estimated_delivery_date": (base_date + timedelta(days=43)).strftime("%Y-%m-%d %H:%M:%S"),
+        "product_id": "P005",
+        "product_category_name": "office",
+        "product_name_lenght": 9,
+        "product_description_lenght": 75,
+        "product_photos_qty": 2,
+        "product_weight_g": 700,
+        "product_length_cm": 25,
+        "product_height_cm": 10,
+        "product_width_cm": 18,
     },
 ]
 
-order_items = [
-    {
-        "order_id": "O001",
-        "order_item_id": 1,
-        "product_id": "P001",
-        "seller_id": "S001",
-        "shipping_limit_date": "2026-01-05 10:00:00",
-        "price": 120.00,
-        "freight_value": 12.50,
-    },
-    {
-        "order_id": "O002",
-        "order_item_id": 1,
-        "product_id": "P002",
-        "seller_id": "S002",
-        "shipping_limit_date": "2026-01-15 10:00:00",
-        "price": 250.00,
-        "freight_value": 20.00,
-    },
-    {
-        "order_id": "O003",
-        "order_item_id": 1,
-        "product_id": "P003",
-        "seller_id": "S003",
-        "shipping_limit_date": "2026-02-10 10:00:00",
-        "price": 85.00,
-        "freight_value": 9.99,
-    },
+
+base_date = datetime(2026, 1, 5, 10, 0, 0)
+
+order_plan = [
+    # month offset, customer_id, product_id, price, freight_value
+    (0, "C001", "P001", 120.00, 12.50),
+    (0, "C002", "P002", 250.00, 20.00),
+    (0, "C003", "P003", 85.00, 9.99),
+    (0, "C004", "P004", 65.00, 7.50),
+
+    (1, "C005", "P001", 145.00, 13.00),
+    (1, "C006", "P003", 95.00, 10.25),
+    (1, "C007", "P005", 180.00, 14.00),
+    (1, "C008", "P002", 275.00, 22.00),
+
+    (2, "C001", "P004", 72.00, 8.00),
+    (2, "C003", "P003", 115.00, 11.00),
+    (2, "C005", "P001", 160.00, 15.00),
+    (2, "C007", "P005", 210.00, 16.00),
+
+    (3, "C002", "P002", 300.00, 24.00),
+    (3, "C004", "P004", 88.00, 8.25),
+    (3, "C006", "P003", 130.00, 12.00),
+    (3, "C008", "P001", 175.00, 15.50),
+
+    (4, "C001", "P005", 225.00, 18.00),
+    (4, "C003", "P002", 320.00, 25.00),
+    (4, "C005", "P003", 150.00, 13.50),
+    (4, "C007", "P004", 95.00, 9.00),
+
+    (5, "C002", "P001", 190.00, 16.00),
+    (5, "C004", "P002", 340.00, 26.00),
+    (5, "C006", "P003", 165.00, 14.00),
+    (5, "C008", "P005", 260.00, 20.00),
 ]
+
+
+orders = []
+order_items = []
+
+for index, (month_offset, customer_id, product_id, price, freight_value) in enumerate(
+    order_plan,
+    start=1,
+):
+    order_id = f"O{index:03}"
+    purchase_timestamp = base_date + timedelta(days=month_offset * 30 + index)
+
+    orders.append(
+        {
+            "order_id": order_id,
+            "customer_id": customer_id,
+            "order_status": "delivered",
+            "order_purchase_timestamp": purchase_timestamp.strftime("%Y-%m-%d %H:%M:%S"),
+            "order_approved_at": (purchase_timestamp + timedelta(hours=1)).strftime("%Y-%m-%d %H:%M:%S"),
+            "order_delivered_carrier_date": (purchase_timestamp + timedelta(days=1)).strftime("%Y-%m-%d %H:%M:%S"),
+            "order_delivered_customer_date": (purchase_timestamp + timedelta(days=4)).strftime("%Y-%m-%d %H:%M:%S"),
+            "order_estimated_delivery_date": (purchase_timestamp + timedelta(days=7)).strftime("%Y-%m-%d %H:%M:%S"),
+        }
+    )
+
+    order_items.append(
+        {
+            "order_id": order_id,
+            "order_item_id": 1,
+            "product_id": product_id,
+            "seller_id": f"S{((index - 1) % 4) + 1:03}",
+            "shipping_limit_date": (purchase_timestamp + timedelta(days=2)).strftime("%Y-%m-%d %H:%M:%S"),
+            "price": price,
+            "freight_value": freight_value,
+        }
+    )
 
 
 write_csv(

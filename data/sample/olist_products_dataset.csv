@@ -2,3 +2,5 @@ product_id,product_category_name,product_name_lenght,product_description_lenght,
 P001,electronics,12,80,2,500,20,10,15
 P002,home_goods,14,95,3,1200,35,20,25
 P003,fitness,10,70,1,800,30,15,20
+P004,beauty,11,60,2,300,18,8,12
+P005,office,9,75,2,700,25,10,18
