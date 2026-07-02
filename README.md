@@ -295,6 +295,42 @@ Current validation result: Passing
 
 ---
 
+## Optional Airflow Orchestration
+
+This project includes an optional Apache Airflow DAG to demonstrate production-style orchestration concepts such as scheduling, task dependencies, retries, and failure handling.
+
+The DAG is located at:
+
+```text
+airflow/dags/retail_analytics_pipeline_dag.py
+```
+
+The DAG includes the following task flow:
+
+```text
+generate_sample_data
+    -> run_snowflake_pipeline
+    -> run_data_quality_tests
+    -> create_visualizations
+```
+
+Airflow retry behavior is configured with:
+
+```text
+retries: 2
+retry_delay: 5 minutes
+catchup: false
+schedule: daily
+```
+
+The Airflow DAG is optional and does not replace the main Python orchestration script. The primary pipeline can still be run directly using:
+
+```bash
+python orchestration/pipeline.py
+```
+
+---
+
 ## Failure Handling
 
 The Python orchestration script runs SQL files in dependency order across Bronze, Silver, Gold, Analytics, Data Quality, and Monitoring layers.
@@ -326,6 +362,8 @@ retail-analytics-platform/
 
 ├── .github/
 │   └── workflows/
+├── airflow/
+│   └── dags/
 ├── data/
 │   └── sample/
 ├── docs/

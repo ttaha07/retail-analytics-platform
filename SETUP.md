@@ -206,7 +206,45 @@ These tests validate:
 
 ---
 
-## 10. GitHub Actions Setup
+---
+
+## 10. Optional: Airflow DAG
+
+This project includes an optional Apache Airflow DAG to demonstrate scheduling, retries, task dependencies, and orchestration design.
+
+The DAG file is located at:
+
+```text
+airflow/dags/retail_analytics_pipeline_dag.py
+```
+
+The DAG runs the following task flow:
+
+```text
+generate_sample_data
+    -> run_snowflake_pipeline
+    -> run_data_quality_tests
+    -> create_visualizations
+```
+
+The DAG includes retry handling:
+
+```text
+retries: 2
+retry_delay: 5 minutes
+schedule: daily
+catchup: false
+```
+
+The Airflow DAG is optional. The project can still be run directly using:
+
+```bash
+python orchestration/pipeline.py
+```
+
+---
+
+## 11. GitHub Actions Setup
 
 The GitHub Actions workflow requires Snowflake credentials to be stored as repository secrets.
 
@@ -233,7 +271,7 @@ Forked repositories must configure their own Snowflake secrets before the workfl
 
 ---
 
-## 11. Expected Validation Result
+## 12. Expected Validation Result
 
 A successful pipeline run should show:
 
@@ -257,7 +295,7 @@ visualizations/monthly_revenue.png
 
 ---
 
-## 12. Troubleshooting
+## 13. Troubleshooting
 
 ### Tests are skipped
 
