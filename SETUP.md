@@ -1,6 +1,6 @@
 # Setup Guide
 
-This guide explains how to run the Retail Analytics Platform locally using Snowflake, Python, and pytest.
+This guide explains how to run the Retail Analytics Platform locally using Snowflake, Python, pytest, sample data, and visualization scripts.
 
 ---
 
@@ -79,10 +79,48 @@ Run:
 
 ```bash
 python scripts/generate_sample_data.py
+```
+
+This creates sample CSV files under:
+
+```text
+data/sample/
+```
+
+Generated files:
+
+```text
+olist_customers_dataset.csv
+olist_orders_dataset.csv
+olist_products_dataset.csv
+olist_order_items_dataset.csv
+```
+
+These files match the naming expected by the Bronze ingestion scripts.
 
 ---
 
-## 6. Upload Source CSV Files to Snowflake Stage
+## 6. Create Visualizations
+
+This project includes a basic visualization layer for demonstration and reporting.
+
+Run:
+
+```bash
+python scripts/create_visualizations.py
+```
+
+This creates:
+
+```text
+visualizations/monthly_revenue.png
+```
+
+The chart demonstrates how curated data can support downstream analytics and BI reporting.
+
+---
+
+## 7. Upload Source CSV Files to Snowflake Stage
 
 The Bronze load scripts expect these source files to exist in the Snowflake internal stage:
 
@@ -104,9 +142,23 @@ olist_order_items_dataset.csv    -> BRONZE_ORDER_ITEMS
 
 The stage and file format are created by the Bronze SQL scripts.
 
+For local testing, you can generate the sample CSV files using:
+
+```bash
+python scripts/generate_sample_data.py
+```
+
+Then upload the generated files from:
+
+```text
+data/sample/
+```
+
+to the Snowflake internal stage used by `sql/bronze/load_data.sql`.
+
 ---
 
-## 7. Run the Pipeline
+## 8. Run the Pipeline
 
 Run the Python orchestration script:
 
@@ -134,7 +186,7 @@ If a SQL statement fails, the pipeline raises an error showing:
 
 ---
 
-## 8. Run Data Quality Tests
+## 9. Run Data Quality Tests
 
 Run the pytest validation suite:
 
@@ -154,7 +206,7 @@ These tests validate:
 
 ---
 
-## 9. GitHub Actions Setup
+## 10. GitHub Actions Setup
 
 The GitHub Actions workflow requires Snowflake credentials to be stored as repository secrets.
 
@@ -169,6 +221,8 @@ SNOWFLAKE_DATABASE
 SNOWFLAKE_SCHEMA
 ```
 
+For more details on CI/CD configuration, see [CI_CD.md](CI_CD.md).
+
 Go to:
 
 ```text
@@ -179,7 +233,7 @@ Forked repositories must configure their own Snowflake secrets before the workfl
 
 ---
 
-## 10. Expected Validation Result
+## 11. Expected Validation Result
 
 A successful pipeline run should show:
 
@@ -195,9 +249,15 @@ A successful pytest run should show passing tests, for example:
 
 The exact number of tests may change as the project evolves.
 
+A successful visualization run should create:
+
+```text
+visualizations/monthly_revenue.png
+```
+
 ---
 
-## 11. Troubleshooting
+## 12. Troubleshooting
 
 ### Tests are skipped
 
@@ -224,8 +284,26 @@ Check that all required Snowflake secrets are configured in the repository setti
 
 Confirm that the expected CSV files exist in the Snowflake internal stage and that the file names match the paths in `sql/bronze/load_data.sql`.
 
+### Visualization script fails
+
+Confirm that sample data exists first.
+
+Run:
+
+```bash
+python scripts/generate_sample_data.py
+```
+
+Then re-run:
+
+```bash
+python scripts/create_visualizations.py
+```
+
 ---
 
 ## Notes
 
 This project uses live Snowflake execution. A Snowflake account and valid credentials are required to fully run the pipeline and tests.
+
+The sample data generator and visualization script can be run locally without connecting to Snowflake.
