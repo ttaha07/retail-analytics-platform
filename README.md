@@ -1,16 +1,19 @@
 # Retail Analytics Platform
 
 ![Status](https://img.shields.io/badge/Status-Completed-success)
-![Snowflake](https://img.shields.io/badge/Snowflake-Data%20Warehouse-29B5E8?logo=snowflake\&logoColor=white)
+![Snowflake](https://img.shields.io/badge/Snowflake-Data%20Warehouse-29B5E8?logo=snowflake&logoColor=white)
 ![SQL](https://img.shields.io/badge/SQL-Analytics-blue)
+![Python](https://img.shields.io/badge/Python-Orchestration-blue?logo=python)
 ![Data Engineering](https://img.shields.io/badge/Data%20Engineering-Portfolio-success)
 ![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-CI%2FCD-success?logo=githubactions)
 
-End-to-end Snowflake Data Engineering project implementing a Medallion Architecture (Bronze, Silver, Gold) for retail analytics.
+End-to-end Snowflake Data Engineering project implementing a Medallion Architecture for retail analytics using Bronze, Silver, and Gold layers.
 
-The platform ingests raw e-commerce data, applies data quality validation, builds dimensional models, generates business KPIs, and monitors pipeline health through automated validation checks.
+The platform ingests raw e-commerce data, applies data quality validation, builds dimensional models, generates business KPIs, creates sample visualizations, and monitors pipeline health through automated validation checks.
 
 For local setup and execution instructions, see [SETUP.md](SETUP.md).
+
+For CI/CD setup and GitHub Actions secrets documentation, see [CI_CD.md](CI_CD.md).
 
 ---
 
@@ -18,14 +21,18 @@ For local setup and execution instructions, see [SETUP.md](SETUP.md).
 
 * Snowflake Data Warehouse
 * Medallion Architecture
+* Bronze, Silver, and Gold Data Layers
 * Star Schema Modeling
+* Python Pipeline Orchestration
 * Data Quality Framework
 * Pipeline Monitoring
 * Business KPI Analytics
+* Sample Data Generator
+* Visualization Layer
+* Pytest Data Quality Checks
 * GitHub Actions CI/CD
-* Automated CI/CD validation using GitHub Actions
-* Real Snowflake-connected orchestration using Python
-* Pytest data quality checks executed against Snowflake tables
+* Secret-Based Snowflake Configuration
+* Failure Handling and Debug Logging
 * Technical Documentation
 
 ---
@@ -50,9 +57,40 @@ flowchart LR
     K["Pytest"] --> G
 ```
 
+---
+
+## Sample Data
+
+This project includes a synthetic sample data generator for local testing and demonstration.
+
+Run:
+
+```bash
+python scripts/generate_sample_data.py
+```
+
+This creates sample CSV files under:
+
+```text
+data/sample/
+```
+
+Generated files:
+
+```text
+olist_customers_dataset.csv
+olist_orders_dataset.csv
+olist_products_dataset.csv
+olist_order_items_dataset.csv
+```
+
+These files follow the same naming pattern expected by the Bronze ingestion scripts.
+
+---
+
 ## Data Ingestion
 
-Raw CSV files are uploaded into Snowflake Internal Stages and loaded using COPY INTO commands.
+Raw CSV files are uploaded into Snowflake Internal Stages and loaded using `COPY INTO` commands.
 
 ![Stage Files](screenshots/day2_stage_files.png)
 
@@ -70,14 +108,16 @@ Validation confirms successful ingestion of all source records.
 
 ## Silver Layer
 
-The Silver Layer performs cleansing, standardization, and validation before data is promoted to analytics-ready layers.
+The Silver Layer performs cleansing, standardization, deduplication, and validation before data is promoted to analytics-ready layers.
 
 Key transformations include:
 
-* Duplicate Removal
-* Null Handling
+* Duplicate removal
+* Null handling
 * Standardization
-* Data Validation
+* Data validation
+* Filtering invalid revenue records
+* Window-function-based deduplication
 
 ### Silver Tables
 
@@ -97,10 +137,12 @@ The Gold Layer contains business-ready dimensional models optimized for reportin
 
 Implemented Star Schema:
 
-* DIM_CUSTOMER
-* DIM_PRODUCT
-* DIM_DATE
-* FACT_SALES
+* `DIM_CUSTOMER`
+* `DIM_PRODUCT`
+* `DIM_DATE`
+* `FACT_SALES`
+
+The Gold Layer includes surrogate keys, business keys, revenue measures, order dates, and load timestamps to support analytics, reporting, and validation.
 
 ![Gold Tables](screenshots/day4_gold_tables.png)
 
@@ -108,7 +150,7 @@ Implemented Star Schema:
 
 ## Business Analytics
 
-The platform supports KPI generation and business reporting.
+The platform supports KPI generation and business reporting from the Gold Layer.
 
 ### Total Revenue KPI
 
@@ -130,17 +172,38 @@ Identifies the highest revenue-generating products.
 
 ---
 
+## Visualization Layer
+
+This project includes a simple visualization layer to demonstrate how curated analytics outputs can support downstream BI and reporting.
+
+The current visualization shows monthly revenue generated from the sample order and order item datasets.
+
+Run:
+
+```bash
+python scripts/create_visualizations.py
+```
+
+Output:
+
+![Monthly Revenue Trend](visualizations/monthly_revenue.png)
+
+---
+
 ## Data Quality Framework
 
-A comprehensive validation framework was implemented to ensure business users can trust analytics generated from the Gold layer.
+A validation framework was implemented to ensure analytics generated from the Gold Layer can be trusted.
 
 ### Validation Categories
 
-* Null Value Checks
-* Duplicate Detection
-* Row Count Reconciliation
-* Freshness Validation
-* Referential Integrity Validation
+* Null value checks
+* Duplicate detection
+* Row count reconciliation
+* Freshness validation
+* Referential integrity validation
+* Surrogate key validation
+* Revenue validation
+* Load timestamp validation
 
 ### Data Quality Validation
 
@@ -178,7 +241,7 @@ Validates the timeliness of available business data.
 
 ### Referential Integrity Validation
 
-Ensures all fact records have valid dimension table relationships.
+Ensures fact records have valid dimension table relationships.
 
 ![Referential Integrity Checks](screenshots/day6_referential_integrity_checks.png)
 
@@ -225,7 +288,8 @@ The workflow performs the following checks:
 * Compiles Python orchestration and test scripts
 * Runs the Snowflake pipeline using `orchestration/pipeline.py`
 * Executes pytest-based data quality checks against Snowflake
-* Validates fact and dimension tables, null checks, revenue checks, and referential integrity
+* Validates fact and dimension tables
+* Checks null values, revenue values, surrogate keys, load timestamps, and referential integrity
 
 Current validation result: Passing
 
@@ -260,10 +324,16 @@ This makes pipeline failures easier to debug and improves operational reliabilit
 ```text
 retail-analytics-platform/
 
-├── .github/workflows/
+├── .github/
+│   └── workflows/
+├── data/
+│   └── sample/
 ├── docs/
 ├── orchestration/
 ├── screenshots/
+├── scripts/
+│   ├── generate_sample_data.py
+│   └── create_visualizations.py
 ├── sql/
 │   ├── analytics/
 │   ├── bronze/
@@ -271,7 +341,12 @@ retail-analytics-platform/
 │   ├── gold/
 │   ├── monitoring/
 │   └── silver/
-└── tests/
+├── tests/
+├── visualizations/
+├── CI_CD.md
+├── README.md
+├── SETUP.md
+└── requirements.txt
 ```
 
 ---
@@ -282,10 +357,12 @@ retail-analytics-platform/
 
 * Databases
 * Schemas
+* Warehouses
 * Internal Stages
 * File Formats
-* COPY INTO
+* `COPY INTO`
 * Analytical SQL
+* Dimensional Modeling
 
 ### Data Engineering
 
@@ -295,25 +372,38 @@ retail-analytics-platform/
 * Data Pipeline Design
 * Data Quality Validation
 * Pipeline Monitoring
-* Dimensional Modeling
+* Star Schema Modeling
+* Reproducible Setup Documentation
+* Failure Handling
 
 ### SQL
 
 * Joins
 * Aggregations
+* Window Functions
 * KPI Development
 * Business Analytics
 * Data Validation
+* Referential Integrity Checks
+
+### Python
+
+* Pipeline Orchestration
+* Snowflake Connector
+* CSV Data Generation
+* Visualization Script
+* Error Handling
+* Pytest Validation
 
 ### Software Engineering
 
-* Python Orchestration
-* Pytest Validation
 * Git
 * GitHub
 * GitHub Actions CI/CD
+* Secret-Based Configuration
 * Technical Documentation
 * Version Control
+* Automated Testing
 
 ---
 
@@ -326,6 +416,7 @@ retail-analytics-platform/
 * Power BI Dashboard Layer
 * Automated Alerting
 * Data Observability Framework
+* Dockerized Local Runtime
 
 ---
 
@@ -336,4 +427,4 @@ Data Engineer | Snowflake | SQL | Microsoft Fabric | Data Warehousing
 
 GitHub: [ttaha07](https://github.com/ttaha07)
 
-This project was built as a Snowflake Data Engineering portfolio project demonstrating data warehousing, analytics engineering, data quality validation, pipeline monitoring, Python orchestration, and automated CI/CD validation.
+This project was built as a Snowflake Data Engineering portfolio project demonstrating data warehousing, analytics engineering, data quality validation, pipeline monitoring, Python orchestration, automated CI/CD validation, sample data generation, and downstream visualization.
