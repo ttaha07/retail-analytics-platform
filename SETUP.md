@@ -342,6 +342,40 @@ python scripts/create_visualizations.py
 
 ---
 
+## Optional dbt Setup
+
+This project includes an optional dbt analytics engineering layer located in:
+
+```text
+dbt/retail_analytics/
+```
+
+Install the optional dbt dependencies:
+
+```bash
+pip install -r requirements-dbt.txt
+```
+
+Then move into the dbt project folder:
+
+```bash
+cd dbt/retail_analytics
+```
+
+Run dbt checks and models:
+
+```bash
+dbt debug
+dbt run
+dbt test
+dbt docs generate
+```
+
+The dbt layer is optional and does not replace the main Snowflake SQL pipeline.
+
+---
+
+
 ## Notes
 
 This project uses live Snowflake execution. A Snowflake account and valid credentials are required to fully run the pipeline and tests.
