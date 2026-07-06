@@ -380,9 +380,16 @@ Silver source tables
     -> analytics models
 ```
 
-Example dbt commands:
+Install optional dbt dependencies:
 
 ```bash
+pip install -r requirements-dbt.txt
+```
+
+Run dbt from the dbt project folder:
+
+```bash
+cd dbt/retail_analytics
 dbt debug
 dbt run
 dbt test
