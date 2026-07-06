@@ -42,6 +42,9 @@ customers = [
 ]
 
 
+# The original Olist dataset uses the misspelled column names
+# product_name_lenght and product_description_lenght.
+# These names are intentionally preserved so sample CSVs match the source schema.
 products = [
     {
         "product_id": "P001",
