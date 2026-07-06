@@ -37,7 +37,11 @@ jobs:
       - name: Compile Python files
         run: |
           python -m py_compile orchestration/pipeline.py
+          python -m py_compile tests/conftest.py
           python -m py_compile tests/data_quality_checks.py
+          python -m py_compile scripts/generate_sample_data.py
+          python -m py_compile scripts/create_visualizations.py
+          python -m py_compile airflow/dags/retail_analytics_pipeline_dag.py
 
       - name: Run Snowflake pipeline
         run: |
