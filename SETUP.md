@@ -114,9 +114,11 @@ This creates:
 
 ```text
 visualizations/monthly_revenue.png
+visualizations/revenue_by_category.png
+visualizations/revenue_by_city.png
 ```
 
-The chart demonstrates how curated data can support downstream analytics and BI reporting.
+The charts demonstrate how curated data can support downstream analytics and BI reporting.
 
 ---
 

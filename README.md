@@ -176,7 +176,13 @@ Identifies the highest revenue-generating products.
 
 This project includes a simple visualization layer to demonstrate how curated analytics outputs can support downstream BI and reporting.
 
-The current visualization shows monthly revenue generated from the sample order and order item datasets.
+The visualization layer currently includes:
+
+```text
+monthly_revenue.png
+revenue_by_category.png
+revenue_by_city.png
+```
 
 Run:
 
@@ -184,9 +190,23 @@ Run:
 python scripts/create_visualizations.py
 ```
 
-Output:
+### Monthly Revenue Trend
+
+Shows revenue performance over time using generated sample order data.
 
 ![Monthly Revenue Trend](visualizations/monthly_revenue.png)
+
+### Revenue by Product Category
+
+Shows which product categories generate the most revenue.
+
+![Revenue by Product Category](visualizations/revenue_by_category.png)
+
+### Revenue by Customer City
+
+Shows revenue distribution across customer locations.
+
+![Revenue by Customer City](visualizations/revenue_by_city.png)
 
 ---
 
