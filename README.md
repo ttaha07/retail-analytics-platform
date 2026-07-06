@@ -400,6 +400,32 @@ The dbt layer is optional and does not replace the main Snowflake SQL pipeline.
 
 ---
 
+
+## Docker
+
+This project includes a Dockerfile for running the Snowflake pipeline in a reproducible Python environment.
+
+Build the image:
+
+```bash
+docker build -t retail-analytics-pipeline .
+```
+
+Run the pipeline:
+
+```bash
+docker run --env-file .env retail-analytics-pipeline
+```
+
+The container uses the main Python pipeline entry point:
+
+```text
+orchestration/pipeline.py
+```
+
+---
+
+
 ## Failure Handling
 
 The Python orchestration script runs SQL files in dependency order across Bronze, Silver, Gold, Analytics, Data Quality, and Monitoring layers.
@@ -460,14 +486,18 @@ retail-analytics-platform/
 │   ├── monitoring/
 │   └── silver/
 ├── tests/
+│   ├── conftest.py
 │   └── data_quality_checks.py
 ├── visualizations/
 │   ├── monthly_revenue.png
 │   ├── revenue_by_category.png
 │   └── revenue_by_city.png
+├── .dockerignore
 ├── CI_CD.md
+├── Dockerfile
 ├── README.md
 ├── SETUP.md
+├── requirements-dbt.txt
 └── requirements.txt
 ```
 
