@@ -1,0 +1,11 @@
+version: 2
+
+sources:
+  - name: silver
+    database: RETAIL_ANALYTICS_DB
+    schema: SILVER
+    tables:
+      - name: SILVER_CUSTOMERS
+      - name: SILVER_PRODUCTS
+      - name: SILVER_ORDERS
+      - name: SILVER_ORDER_ITEMS

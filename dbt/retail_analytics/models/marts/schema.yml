@@ -1,0 +1,57 @@
+version: 2
+
+models:
+  - name: dim_customer
+    description: Customer dimension table with one row per unique customer.
+    columns:
+      - name: customer_sk
+        tests:
+          - not_null
+          - unique
+      - name: customer_unique_id
+        tests:
+          - not_null
+          - unique
+
+  - name: dim_product
+    description: Product dimension table.
+    columns:
+      - name: product_sk
+        tests:
+          - not_null
+          - unique
+      - name: product_id
+        tests:
+          - not_null
+          - unique
+
+  - name: dim_date
+    description: Date dimension table generated from order purchase dates.
+    columns:
+      - name: date_sk
+        tests:
+          - not_null
+          - unique
+      - name: order_date
+        tests:
+          - not_null
+
+  - name: fact_sales
+    description: Sales fact table at the order item grain.
+    columns:
+      - name: sales_sk
+        tests:
+          - not_null
+          - unique
+      - name: customer_sk
+        tests:
+          - not_null
+      - name: product_sk
+        tests:
+          - not_null
+      - name: date_sk
+        tests:
+          - not_null
+      - name: total_sale_amount
+        tests:
+          - not_null

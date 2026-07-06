@@ -1,0 +1,19 @@
+name: retail_analytics
+version: "1.0.0"
+config-version: 2
+
+profile: retail_analytics
+
+model-paths: ["models"]
+
+models:
+  retail_analytics:
+    staging:
+      +materialized: view
+      +schema: silver
+    marts:
+      +materialized: table
+      +schema: gold
+    analytics:
+      +materialized: view
+      +schema: analytics

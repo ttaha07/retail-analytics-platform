@@ -351,6 +351,48 @@ python orchestration/pipeline.py
 
 ---
 
+## Optional dbt Analytics Engineering Layer
+
+This project includes an optional dbt layer to demonstrate analytics engineering practices on top of the Snowflake Silver layer.
+
+The dbt project is located at:
+
+```text
+dbt/retail_analytics/
+```
+
+The dbt layer includes:
+
+* Source definitions for Silver tables
+* Staging models
+* Dimension models
+* Fact model
+* Monthly revenue analytics model
+* Schema tests
+* Model documentation
+
+dbt model flow:
+
+```text
+Silver source tables
+    -> staging models
+    -> marts models
+    -> analytics models
+```
+
+Example dbt commands:
+
+```bash
+dbt debug
+dbt run
+dbt test
+dbt docs generate
+```
+
+The dbt layer is optional and does not replace the main Snowflake SQL pipeline.
+
+---
+
 ## Failure Handling
 
 The Python orchestration script runs SQL files in dependency order across Bronze, Silver, Gold, Analytics, Data Quality, and Monitoring layers.
@@ -384,10 +426,21 @@ retail-analytics-platform/
 │   └── workflows/
 ├── airflow/
 │   └── dags/
+│       └── retail_analytics_pipeline_dag.py
 ├── data/
 │   └── sample/
+├── dbt/
+│   └── retail_analytics/
+│       ├── models/
+│       │   ├── analytics/
+│       │   ├── marts/
+│       │   └── staging/
+│       ├── dbt_project.yml
+│       ├── profiles.yml.example
+│       └── README.md
 ├── docs/
 ├── orchestration/
+│   └── pipeline.py
 ├── screenshots/
 ├── scripts/
 │   ├── generate_sample_data.py
@@ -400,7 +453,11 @@ retail-analytics-platform/
 │   ├── monitoring/
 │   └── silver/
 ├── tests/
+│   └── data_quality_checks.py
 ├── visualizations/
+│   ├── monthly_revenue.png
+│   ├── revenue_by_category.png
+│   └── revenue_by_city.png
 ├── CI_CD.md
 ├── README.md
 ├── SETUP.md
