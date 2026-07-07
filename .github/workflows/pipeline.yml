@@ -45,4 +45,4 @@ jobs:
 
       - name: Run data quality checks
         if: ${{ env.SNOWFLAKE_ACCOUNT != '' }}
-        run: python tests/data_quality_checks.py
+        run: pytest tests/data_quality_checks.py -v -p no:cacheprovider
