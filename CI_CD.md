@@ -1,11 +1,20 @@
 # CI/CD Guide
 
-This project uses GitHub Actions to validate the Snowflake data pipeline and data quality test suite.
+This project uses GitHub Actions to validate the pipeline on every push and pull request to `main`.
 
-The workflow is defined in:
+The workflow is designed to prove that the project is reproducible, testable, and safe to run without exposing Snowflake credentials.
 
-```text
-.github/workflows/pipeline.yml
+### Workflow Overview
+
+| Step | What It Validates | Why It Matters |
+|---|---|---|
+| Checkout repository | Pulls the latest project code into the GitHub runner. | Ensures CI tests the exact version being committed. |
+| Set up Python | Installs Python 3.12 with pip caching. | Keeps the runtime consistent and improves workflow speed. |
+| Install dependencies | Installs Python packages from `requirements.txt`. | Confirms the project can be installed from a clean environment. |
+| Compile Python files | Runs syntax checks against orchestration and test code. | Catches Python syntax errors before runtime. |
+| Build Docker image | Builds the project container. | Confirms the pipeline can run in a portable Docker environment. |
+| Run Snowflake pipeline | Executes the Snowflake orchestration script when secrets are available. | Validates the end-to-end Snowflake pipeline in CI. |
+| Run data quality checks | Runs `pytest` against Gold-layer Snowflake tables. | Confirms the curated analytics layer passes quality checks. |
 ```
 
 ---

@@ -13,7 +13,21 @@ The platform ingests raw e-commerce data, applies data quality validation, build
 
 For local setup and execution instructions, see [SETUP.md](SETUP.md).
 
-For CI/CD setup and GitHub Actions secrets documentation, see [CI_CD.md](CI_CD.md).
+## CI/CD Validation
+
+This project uses GitHub Actions to validate the pipeline on every push and pull request to `main`.
+
+The workflow validates:
+
+- Python syntax
+- Dependency installation
+- Docker image build
+- Snowflake pipeline execution when secrets are available
+- Pytest data quality checks against the Gold layer
+
+Snowflake credentials are stored securely in GitHub Actions Secrets and are never committed to the repository.
+
+For the full CI/CD setup, workflow steps, and required secrets, see [CI_CD.md](CI_CD.md).
 
 ---
 
@@ -47,15 +61,32 @@ flowchart LR
     B --> C["Bronze Layer"]
     C --> D["Silver Layer"]
     D --> E["Gold Star Schema"]
-    E --> F["Analytics"]
-    E --> G["Data Quality"]
+    E --> F["Analytics SQL"]
+    E --> G["Data Quality Tests"]
     E --> H["Monitoring"]
-
     I["GitHub Actions"] --> J["Python Pipeline"]
     J -. orchestrates .-> C
     J -. validates .-> G
     K["Pytest"] --> G
 ```
+
+---
+
+## Engineering Decisions
+
+This project was designed to demonstrate practical data engineering decisions used in production-style analytics pipelines.
+
+| Decision | Reason |
+|---|---|
+| Medallion architecture | Separates raw ingestion, cleaned data, and analytics-ready models into clear Bronze, Silver, and Gold layers. |
+| Snowflake internal stage | Provides a repeatable loading pattern for CSV ingestion into Bronze tables. |
+| SQL-first transformations | Keeps the pipeline transparent, easy to review, and aligned with analytics engineering workflows. |
+| Star schema in Gold | Optimizes the curated layer for business analytics, reporting, and data quality validation. |
+| `FACT_SALES` order-item grain | Preserves transaction detail while supporting revenue, product, customer, and retention analytics. |
+| `CUSTOMER_UNIQUE_ID` for retention | Tracks the same physical customer across repeat orders, unlike `CUSTOMER_ID`, which can vary by order. |
+| Pytest data quality checks | Validates row counts, nulls, uniqueness, referential integrity, and trusted Gold-layer outputs. |
+| Docker support | Makes the pipeline portable and reproducible across local and CI environments. |
+| GitHub Actions CI/CD | Automatically validates Python syntax, Docker builds, and Snowflake-backed data quality tests. |
 
 ---
 
