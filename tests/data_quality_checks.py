@@ -6,7 +6,6 @@ pytestmark = pytest.mark.snowflake
 
 def run_scalar_query(connection, query):
     cursor = connection.cursor()
-
     try:
         cursor.execute(query)
         result = cursor.fetchone()[0]
