@@ -7,4 +7,4 @@ flowchart TD
     A[CSV Source Files] --> B[Bronze Raw Tables]
     B --> C[Silver Clean Tables]
     C --> D[Gold Star Schema]
-    D --> E[Analytics SQL and Data Quality Tests]
+    D --> E[Analytics SQL and Data Quality Tests] 
