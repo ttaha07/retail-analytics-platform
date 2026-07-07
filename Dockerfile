@@ -8,7 +8,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-RUN adduser --disabled-password appuser
+RUN adduser --disabled-password --gecos '' appuser
 USER appuser
 
 CMD ["python", "orchestration/pipeline.py"]

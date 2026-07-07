@@ -1,39 +1,19 @@
 # Star Schema
 
-The Gold layer models retail data into a star schema centered on `FACT_SALES`. The fact table stores order-item level sales events and joins to customer, product, and date dimensions.
+The Gold layer centers on `FACT_SALES`, an order-item level fact table joined to customer, product, and date dimensions.
 
-```mermaid
-erDiagram
-    FACT_SALES {
-        number SALES_SK
-        number CUSTOMER_SK
-        number PRODUCT_SK
-        number DATE_SK
-        string ORDER_ID
-        string ORDER_ITEM_ID
-        string CUSTOMER_UNIQUE_ID
-        number TOTAL_SALE_AMOUNT
-    }
+| Table | Grain | Key Columns |
+|---|---|---|
+| `FACT_SALES` | One row per order item | `SALES_SK`, `ORDER_ID`, `ORDER_ITEM_ID`, `CUSTOMER_UNIQUE_ID`, `PRODUCT_ID`, `TOTAL_SALE_AMOUNT` |
+| `DIM_CUSTOMER` | One row per customer | `CUSTOMER_SK`, `CUSTOMER_ID`, `CUSTOMER_UNIQUE_ID`, `CUSTOMER_STATE` |
+| `DIM_PRODUCT` | One row per product | `PRODUCT_SK`, `PRODUCT_ID`, `PRODUCT_CATEGORY_NAME` |
+| `DIM_DATE` | One row per order date | `DATE_SK`, `ORDER_DATE`, `YEAR`, `MONTH` |
 
-    DIM_CUSTOMER {
-        number CUSTOMER_SK
-        string CUSTOMER_ID
-        string CUSTOMER_UNIQUE_ID
-    }
+## Analytics Supported
 
-    DIM_PRODUCT {
-        number PRODUCT_SK
-        string PRODUCT_ID
-        string PRODUCT_CATEGORY_NAME
-    }
-
-    DIM_DATE {
-        number DATE_SK
-        date ORDER_DATE
-        number YEAR
-        number MONTH
-    }
-
-    DIM_CUSTOMER ||--o{ FACT_SALES : customer
-    DIM_PRODUCT ||--o{ FACT_SALES : product
-    DIM_DATE ||--o{ FACT_SALES : date
+| Query | Purpose |
+|---|---|
+| `monthly_revenue.sql` | Revenue trends over time. |
+| `top_products.sql` | Product performance ranking. |
+| `customer_retention.sql` | Cohort retention by first purchase month. |
+| `regional_sales.sql` | Regional sales analysis. |

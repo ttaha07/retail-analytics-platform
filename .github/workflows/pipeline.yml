@@ -22,10 +22,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
+            - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+          cache: "pip"
 
       - name: Install dependencies
         run: |
@@ -36,8 +37,17 @@ jobs:
       - name: Python syntax check
         run: python -m compileall orchestration scripts tests
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Build Docker image
-        run: docker build -t retail-analytics-pipeline .
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          tags: retail-analytics-pipeline:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Run Snowflake pipeline
         if: ${{ env.SNOWFLAKE_ACCOUNT != '' }}
