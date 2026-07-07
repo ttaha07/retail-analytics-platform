@@ -16,7 +16,7 @@ with DAG(
     dag_id="retail_analytics_pipeline",
     default_args=default_args,
     description="Orchestrates the Retail Analytics Snowflake pipeline.",
-    schedule_interval=None,
+    schedule=None,
     start_date=datetime(2026, 1, 1),
     catchup=False,
     tags=["snowflake", "retail", "data-engineering"],
