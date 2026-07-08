@@ -19,19 +19,21 @@ The workflow is designed to prove that the project is reproducible, testable, an
 
 ---
 
+```md
 ## What the Workflow Does
 
 The CI/CD workflow runs whenever code is pushed to the repository or a pull request is opened.
 
 The workflow performs the following steps:
 
-```text
-1. Checks out the repository
-2. Sets up Python
-3. Installs project dependencies
-4. Runs the Snowflake pipeline
-5. Runs pytest data quality checks
-```
+1. Checks out the repository.
+2. Sets up Python 3.12 with pip caching.
+3. Installs project dependencies.
+4. Runs Python syntax checks.
+5. Sets up Docker Buildx.
+6. Builds the Docker image with layer caching.
+7. Runs the Snowflake pipeline when secrets are available.
+8. Runs pytest data quality checks when secrets are available.
 
 ---
 
