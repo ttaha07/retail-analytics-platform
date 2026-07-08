@@ -19,7 +19,7 @@ The workflow is designed to prove that the project is reproducible, testable, an
 
 ---
 
-```md
+```
 ## What the Workflow Does
 
 The CI/CD workflow runs whenever code is pushed to the repository or a pull request is opened.
